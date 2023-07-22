@@ -1,0 +1,76 @@
+name: meu_flash
+description: A new Flutter project.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  firebase_core: ^2.13.0
+  firebase_auth: ^4.6.1
+  google_sign_in: ^6.1.2
+  cloud_firestore: ^4.7.1
+  provider: ^6.0.5
+  flutter_flip_card: ^0.0.4
+  flutter_mobx: ^2.0.1
+  mobx: ^2.0.6
+  intl: ^0.18.1
+  flutter_spinkit: ^5.1.0
+  image_picker: ^1.0.0
+  firebase_storage: ^11.0.0
+  path_provider: ^2.0.15 # The version may change, please verify
+  flutter_cache_manager: ^3.3.0 # The version may change, please verify
+  universal_html: ^2.2.3
+  cached_network_image: ^3.1.0
+  video_player: ^2.2.6
+  flip_card: ^0.7.0
+  table_calendar: ^3.0.0
+
+dev_dependencies:
+  build_runner: ^2.1.4
+  mobx_codegen: ^2.0.3
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - lib/assets/google_logo.png
+    - lib/assets/flashcards.csv
+    - lib/assets/cardiologia.jpg
+    - lib/assets/hematologia.jpg
+    - lib/assets/pediatria.jpg
+    - lib/assets/neurologia.jpg
+    - lib/assets/ginecologia.jpg
+    - lib/assets/dermatologia.jpg
+    - lib/assets/oftalmologia.jpg
+    - lib/assets/pneumologia.jpg
+    - lib/assets/categoria.jpg
+    - lib/assets/med1.gif
+    - lib/assets/med2.png
+    - lib/assets/profile.png
+    - lib/assets/intro/intro.mp4
+    - lib/assets/logo/transparent_white_logo.png
+    - lib/assets/logo/texto_white.png
+    - lib/assets/logo/only_logo.png
+    - lib/assets/intro/intro_load.gif
+    - lib/assets/simbolos/foguinho.png
+    - lib/assets/simbolos/cerebro.png
+    - lib/assets/simbolos/xp.png
+    - lib/assets/simbolos/circle.png
+    - lib/assets/logo/static_logo.png
+    - lib/assets/botoes/static_criarconta.png
+    - lib/assets/botoes/botao_login.png
+    - lib/assets/profile_picture.png
+    - lib/assets/logo/text_logo.png
+    - lib/assets/logo/back_intro.png
+    - lib/assets/fundo/study_background.png
+    - lib/assets/logo/canto_logo.png
+    - lib/assets/icons/cards.png

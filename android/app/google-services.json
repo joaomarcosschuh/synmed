@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "857412064219",
+    "project_id": "meuflash-90e88",
+    "storage_bucket": "meuflash-90e88.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857412064219:android:8e8833dd24f2c0ac108dfe",
+        "android_client_info": {
+          "package_name": "com.example.meu_flash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5zhfd7cYXnpphXmnkvGcayfV8jnE2NnU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -31,7 +31,12 @@ class _StudyPageState extends State<StudyPage> {
     if (flashcards.isEmpty) {
       return Scaffold(
         backgroundColor: Colors.grey[200],
-        body: Center(child: Text('No more flashcards to study', style: TextStyle(color: Colors.black54))),
+        body: Center(
+          child: Text(
+            'No more flashcards to study',
+            style: TextStyle(color: Colors.black54),
+          ),
+        ),
       );
     }
 
@@ -39,137 +44,175 @@ class _StudyPageState extends State<StudyPage> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20), // Espaço entre as bordas da tela e os botões
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            Image.asset(
-              'lib/assets/logo/static_logo.png',
-              width: 266,
-              height: 133,
-            ),
-            SizedBox(height: 20), // Espaço entre o logotipo e o cartão
-            FlipCard(
-              key: cardKey,
-              flipOnTouch: false,
-              direction: FlipDirection.VERTICAL,
-              front: _buildCardFace(currentFlashcard.flashcardQuestion, true),
-              back: _buildCardFace(currentFlashcard.flashcardAnswer, true),
-            ),
-            SizedBox(height: 20), // Espaço entre o cartão e os botões
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-                minimumSize: Size(180, 60), // Tamanho mínimo do botão 'Flip'
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Align(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        FlipCard(
+                          key: cardKey,
+                          flipOnTouch: false,
+                          direction: FlipDirection.VERTICAL,
+                          front: _buildCardFace(currentFlashcard.flashcardQuestion, true),
+                          back: _buildCardFace(currentFlashcard.flashcardAnswer, true),
+                        ),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            minimumSize: Size(180, 60),
+                          ),
+                          onPressed: () {
+                            cardKey.currentState!.toggleCard();
+                          },
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              'Flip',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        ListView(
+                          shrinkWrap: true,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                      minimumSize: Size(140, 55),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        progressStore.updateProgress(currentFlashcard.flashcardId, 'again');
+                                        currentIndex = (currentIndex + 1) % flashcards.length;
+                                        cardKey.currentState!.toggleCard();
+                                      });
+
+                                      statsStore.updateDailyStatsForStudySession();
+
+                                      print('DailyStats updated: ${statsStore.dailyStats.toString()}');
+                                    },
+                                    child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Text(
+                                        'Again',
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                      minimumSize: Size(140, 55),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        progressStore.updateProgress(currentFlashcard.flashcardId, 'hard');
+                                        currentIndex = (currentIndex + 1) % flashcards.length;
+                                        cardKey.currentState!.toggleCard();
+                                      });
+
+                                      statsStore.updateDailyStatsForStudySession();
+
+                                      print('DailyStats updated: ${statsStore.dailyStats.toString()}');
+                                    },
+                                    child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Text(
+                                        'Hard',
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                      minimumSize: Size(140, 55),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        progressStore.updateProgress(currentFlashcard.flashcardId, 'medium');
+                                        currentIndex = (currentIndex + 1) % flashcards.length;
+                                        cardKey.currentState!.toggleCard();
+                                      });
+
+                                      statsStore.updateDailyStatsForStudySession();
+
+                                      print('DailyStats updated: ${statsStore.dailyStats.toString()}');
+                                    },
+                                    child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Text(
+                                        'Medium',
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                      minimumSize: Size(140, 55),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        progressStore.updateProgress(currentFlashcard.flashcardId, 'easy');
+                                        currentIndex = (currentIndex + 1) % flashcards.length;
+                                        cardKey.currentState!.toggleCard();
+                                      });
+
+                                      statsStore.updateDailyStatsForStudySession();
+
+                                      print('DailyStats updated: ${statsStore.dailyStats.toString()}');
+                                    },
+                                    child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Text(
+                                        'Easy',
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              onPressed: () {
-                cardKey.currentState!.toggleCard();
-              },
-              child: Text(
-                'Flip',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
             ),
-            SizedBox(height: 20), // Espaço entre o botão 'Flip' e a linha de botões
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    minimumSize: Size(140, 60), // Tamanho mínimo dos botões 'Again', 'Hard', 'Medium', 'Easy'
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      progressStore.updateProgress(currentFlashcard.flashcardId, 'again');
-                      currentIndex = (currentIndex + 1) % flashcards.length;
-                      cardKey.currentState!.toggleCard();
-                    });
-
-                    statsStore.updateDailyStatsForStudySession();
-
-                    print('DailyStats updated: ${statsStore.dailyStats.toString()}');
-                  },
-                  child: Text(
-                    'Again',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(width: 10), // Espaço horizontal entre os botões 'Again' e 'Hard'
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    minimumSize: Size(140, 60),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      progressStore.updateProgress(currentFlashcard.flashcardId, 'hard');
-                      currentIndex = (currentIndex + 1) % flashcards.length;
-                      cardKey.currentState!.toggleCard();
-                    });
-
-                    statsStore.updateDailyStatsForStudySession();
-
-                    print('DailyStats updated: ${statsStore.dailyStats.toString()}');
-                  },
-                  child: Text(
-                    'Hard',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(width: 10), // Espaço horizontal entre os botões 'Hard' e 'Medium'
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    minimumSize: Size(140, 60),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      progressStore.updateProgress(currentFlashcard.flashcardId, 'medium');
-                      currentIndex = (currentIndex + 1) % flashcards.length;
-                      cardKey.currentState!.toggleCard();
-                    });
-
-                    statsStore.updateDailyStatsForStudySession();
-
-                    print('DailyStats updated: ${statsStore.dailyStats.toString()}');
-                  },
-                  child: Text(
-                    'Medium',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(width: 10), // Espaço horizontal entre os botões 'Medium' e 'Easy'
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    minimumSize: Size(140, 60),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      progressStore.updateProgress(currentFlashcard.flashcardId, 'easy');
-                      currentIndex = (currentIndex + 1) % flashcards.length;
-                      cardKey.currentState!.toggleCard();
-                    });
-
-                    statsStore.updateDailyStatsForStudySession();
-
-                    print('DailyStats updated: ${statsStore.dailyStats.toString()}');
-                  },
-                  child: Text(
-                    'Easy',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -177,6 +220,7 @@ class _StudyPageState extends State<StudyPage> {
 
   Widget _buildCardFace(String text, bool showLogo) {
     return Card(
+      elevation: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
@@ -196,18 +240,19 @@ class _StudyPageState extends State<StudyPage> {
               ),
             ),
           ),
-          if (showLogo)
-            Positioned(
-              bottom: 7,
-              right: 10,
-              child: Image.asset(
-                'lib/assets/logo/canto_logo.png',
-                width: 100, // Tamanho ajustado do logo
-                height: 30, // Tamanho ajustado do logo
-              ),
+          Positioned(
+            bottom: 7,
+            right: 10,
+            child: Image.asset(
+              'lib/assets/logo/canto_logo.png',
+              width: 75,
+              height: 46,
             ),
+          ),
         ],
       ),
     );
   }
 }
+
+

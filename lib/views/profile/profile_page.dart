@@ -14,7 +14,7 @@ class _ProfilePageState extends State<ProfilePage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   int streak = 0;
-  int totalXP = 0; // Add a new state for total XP
+  int totalXP = 0;
   late String userUid;
   Map<String, bool> dailyLogins = {};
 
@@ -81,6 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
           UserModel user = UserModel.fromDocumentSnapshot(snapshot.data!);
 
           return Scaffold(
+            backgroundColor: Colors.black,
             body: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -101,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   SizedBox(height: 10),
                   Text(
                     '@${user.username}',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 20, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
@@ -120,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             Text(
                               '$streak Streak',
                               style: TextStyle(
-                                color: Colors.black87,
+                                color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -130,14 +131,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         Column(
                           children: [
                             Image.asset(
-                              'lib/assets/simbolos/cerebro.png',
-                              width: 45,
+                              'lib/assets/simbolos/xp.png',
+                              width: 60,
                             ),
                             SizedBox(height: 10),
                             Text(
                               '$totalXP XP Total',
                               style: TextStyle(
-                                color: Colors.black87,
+                                color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -148,46 +149,44 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Flexible(
-                    child: SingleChildScrollView(
-                      child: TableCalendar(
-                        firstDay: DateTime.utc(2020, 10, 16),
-                        lastDay: DateTime.utc(2030, 3, 14),
-                        focusedDay: _focusedDay,
-                        calendarFormat: _calendarFormat,
-                        onDaySelected: null,
-                        selectedDayPredicate: (day) {
-                          return false;
-                        },
-                        headerStyle: HeaderStyle(formatButtonVisible: false),
-                        calendarStyle: CalendarStyle(
-                          todayDecoration: BoxDecoration(
-                            color: Colors.transparent,
-                            shape: BoxShape.circle,
-                          ),
-                          todayTextStyle: TextStyle().copyWith(color: Colors.black),
-                        ),
-                        calendarBuilders: CalendarBuilders(
-                          markerBuilder: (context, date, events) {
-                            String dateString =
-                                '${date.day}-${date.month}-${date.year}';
-                            if (dailyLogins[dateString] == true) {
-                              return Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                    image: AssetImage('lib/assets/simbolos/circle.png'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            }
-                            return null;
-                          },
-                        ),
+                  TableCalendar(
+                    firstDay: DateTime.utc(2020, 10, 16),
+                    lastDay: DateTime.utc(2030, 3, 14),
+                    focusedDay: _focusedDay,
+                    calendarFormat: _calendarFormat,
+                    onDaySelected: null,
+                    selectedDayPredicate: (day) {
+                      return false;
+                    },
+                    headerStyle: HeaderStyle(formatButtonVisible: false),
+                    calendarStyle: CalendarStyle(
+                      todayDecoration: BoxDecoration(
+                        color: Colors.transparent,
+                        shape: BoxShape.circle,
                       ),
+                      todayTextStyle: TextStyle(color: Colors.white),
+                      defaultTextStyle: TextStyle(color: Colors.white),
+                      weekendTextStyle: TextStyle(color: Colors.white),
+                    ),
+                    calendarBuilders: CalendarBuilders(
+                      markerBuilder: (context, date, events) {
+                        String dateString =
+                            '${date.day}-${date.month}-${date.year}';
+                        if (dailyLogins[dateString] == true) {
+                          return Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: AssetImage('lib/assets/simbolos/circle.png'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],

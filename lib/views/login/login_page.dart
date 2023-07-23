@@ -70,12 +70,18 @@ class _LoginPageState extends State<LoginPage> {
         DocumentSnapshot userDoc = await _userService.getUser(user!.uid);
         if (userDoc.exists) {
           final userData = userDoc.data() as Map<String, dynamic>?;
-          if (userData != null && userData.containsKey('username')) {
+          DocumentSnapshot streakDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).collection('statistics').doc('streak').get();
+          if (!streakDoc.exists) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => FirstLoginPage()),
+            );
+          } else {
             // Get the current date
             DateTime now = DateTime.now();
 
             // Check if the user has already logged in today
-            if (userData['lastLoginAt'].toDate().day != now.day) {
+            if (userData!['lastLoginAt']?.toDate().day != now.day) {
               // This is the first login of the day
               await _userService.updateLastLoginAt(user.uid, now);
 
@@ -101,14 +107,10 @@ class _LoginPageState extends State<LoginPage> {
               await _statsStore.checkAndUpdateStreak(user.uid);
             }
 
+            // Redirect to the MainViewPage (page of categories)
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => MainViewPage()),
-            );
-          } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => FirstLoginPage()),
             );
           }
         }
@@ -136,12 +138,18 @@ class _LoginPageState extends State<LoginPage> {
       DocumentSnapshot userDoc = await _userService.getUser(user!.uid);
       if (userDoc.exists) {
         final userData = userDoc.data() as Map<String, dynamic>?;
-        if (userData != null && userData.containsKey('username')) {
+        DocumentSnapshot streakDoc = await FirebaseFirestore.instance.collection('streaks').doc(user.uid).get();
+        if (!streakDoc.exists) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => FirstLoginPage()),
+          );
+        } else {
           // Get the current date
           DateTime now = DateTime.now();
 
           // Check if the user has already logged in today
-          if (userData['lastLoginAt'].toDate().day != now.day) {
+          if (userData!['lastLoginAt']?.toDate().day != now.day) {
             // This is the first login of the day
             await _userService.updateLastLoginAt(user.uid, now);
 
@@ -167,14 +175,10 @@ class _LoginPageState extends State<LoginPage> {
             await _statsStore.checkAndUpdateStreak(user.uid);
           }
 
+          // Redirect to the MainViewPage (page of categories)
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => MainViewPage()),
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => FirstLoginPage()),
           );
         }
       }
@@ -209,10 +213,10 @@ class _LoginPageState extends State<LoginPage> {
                         labelText: 'Email',
                         labelStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white), // Change the button border color to white
+                          borderSide: BorderSide(color: Colors.white),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white), // Change the button border color to white
+                          borderSide: BorderSide(color: Colors.white),
                         ),
                       ),
                       validator: (value) {
@@ -231,10 +235,10 @@ class _LoginPageState extends State<LoginPage> {
                         labelText: 'Password',
                         labelStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white), // Change the button border color to white
+                          borderSide: BorderSide(color: Colors.white),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white), // Change the button border color to white
+                          borderSide: BorderSide(color: Colors.white),
                         ),
                       ),
                       validator: (value) {
@@ -254,7 +258,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         onPressed: _login,
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.white, // Change the button background color to white
+                          primary: Colors.white,
                         ),
                         child: Text(
                           'Log in',
@@ -269,7 +273,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         onPressed: _loginWithGoogle,
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.red, // Change the button background color to red
+                          primary: Colors.red,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

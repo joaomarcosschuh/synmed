@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '/services/session_services/user_service.dart';
+import 'package:meu_flash/services/session_services/user_service.dart';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'package:universal_html/html.dart' as html;
@@ -8,6 +8,10 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:meu_flash/models/streak_model.dart';
+import 'package:meu_flash/services/stats/streak_service.dart';
+import 'package:meu_flash/services/stats/dailystats_service.dart';
+import 'package:meu_flash/services/stats/streak_service.dart';
 
 class FirstLoginPage extends StatefulWidget {
   @override
@@ -28,6 +32,8 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
   final ImagePicker _picker = ImagePicker();
   final FirebaseStorage _storage = FirebaseStorage.instance;
   String? _medicinaEtapa;
+  final DailyStatsService _dailyStatsService = DailyStatsService();
+  final StreakService _streakService = StreakService(DailyStatsService());
 
   @override
   void initState() {
@@ -102,6 +108,15 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
             );
           }
 
+          // Create a new streak document for the user
+          String userId = user.uid;
+          StreakModel newStreak = StreakModel(
+            dailyLogins: {},
+            streak: 0,
+            totalXP: 0,
+          );
+          await _streakService.updateStreak(userId, newStreak);
+
           Navigator.pushReplacementNamed(context, '/mainView');
         }
       } else {
@@ -114,8 +129,7 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
 
   Future<void> _getPicture() async {
     if (kIsWeb) {
-      html.FileUploadInputElement uploadInput =
-      html.FileUploadInputElement();
+      html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
       uploadInput.click();
 
       uploadInput.onChange.listen((e) {
@@ -133,8 +147,7 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
         });
       });
     } else {
-      final pickedFile =
-      await _picker.pickImage(source: ImageSource.gallery);
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         setState(() {
           _profilePicture = File(pickedFile.path);
@@ -162,8 +175,9 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
-        padding: EdgeInsets.all(54.0),
-        child: Form(
+        padding: EdgeInsets.symmetric(horizontal:(54.0)),
+        child: SingleChildScrollView(
+         child: Form(
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -369,6 +383,7 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
           ),
         ),
       ),
+      )
     );
   }
 }

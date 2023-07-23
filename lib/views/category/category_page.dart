@@ -87,6 +87,8 @@ class _CategoryPageState extends State<CategoryPage> {
     }
   }
 
+  // Your other methods here...
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -259,6 +261,20 @@ class _CategoryPageState extends State<CategoryPage> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: Consumer<SelectedDecks>(
+        builder: (context, selectedDecks, _) {
+          return FloatingActionButton(
+            backgroundColor: Colors.black87,
+            onPressed: selectedDecks.selectedDecks.isEmpty
+                ? null
+                : () {
+              Navigator.pushNamed(context, '/loading',
+                  arguments: selectedDecks.selectedDecks.toList());
+            },
+            child: Icon(Icons.play_arrow, color: Colors.white),
+          );
+        },
       ),
     );
   }

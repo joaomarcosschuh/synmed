@@ -28,8 +28,6 @@ class _CategoryPageState extends State<CategoryPage> {
   Widget build(BuildContext context) {
     return Consumer<SelectedDecks>(
       builder: (context, selectedDecks, _) {
-        bool hasSelectedDecks = selectedDecks.selectedDecks.isNotEmpty;
-
         return Scaffold(
           backgroundColor: Colors.black,
           body: SingleChildScrollView(
@@ -87,38 +85,14 @@ class _CategoryPageState extends State<CategoryPage> {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: categories.keys.map((category) {
-                                final decks = categories[category]!;
-                                return Container(
-                                  margin: EdgeInsets.symmetric(vertical: 0.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    color: Colors.black,
-                                  ),
-                                  child: Theme(
-                                    data: ThemeData(
-                                      textTheme: TextTheme(
-                                        titleMedium: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      unselectedWidgetColor: Colors.white,
-                                    ),
-                                    child: ExpansionTile(
-                                      leading: CircleAvatar(
-                                        radius: 20,
-                                        backgroundImage: AssetImage(
-                                          'lib/assets/${category.toLowerCase()}.jpg',
-                                        ),
-                                      ),
-                                      title: Text(category),
-                                      children: decks.map((deck) {
-                                        return DeckCheckbox(
-                                          deck: deck,
-                                          initialValue: selectedDecks.isSelected(deck),
-                                        );
-                                      }).toList(),
+                                return ListTile(
+                                  leading: CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: AssetImage(
+                                      'lib/assets/${category.toLowerCase()}.jpg',
                                     ),
                                   ),
+                                  title: Text(category),
                                 );
                               }).toList(),
                             );
@@ -131,48 +105,6 @@ class _CategoryPageState extends State<CategoryPage> {
                 SizedBox(height: 30),
                 SizedBox(height: 500),
               ],
-            ),
-          ),
-          floatingActionButton: Container(
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.only(bottom: 16.0),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                width: 200.0,
-                height: 40.0,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                  onPressed: () {
-                    if (hasSelectedDecks) {
-                      Navigator.pushNamed(
-                        context,
-                        '/loading',
-                        arguments: selectedDecks.selectedDecks.toList(),
-                      );
-                    }
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: FittedBox( // Wrap the Text widget with FittedBox
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        hasSelectedDecks ? "Estudar" : "Selecione um tema",
-                        style: TextStyle(
-                          fontSize: 36.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ),
           ),
         );

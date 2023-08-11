@@ -6,6 +6,11 @@ import 'package:meu_flash/stores/stats_store.dart';
 import 'package:meu_flash/stores/auth_store.dart';
 import 'package:meu_flash/models/dailystats_model.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meu_flash/models/streak_model.dart';
+import 'package:meu_flash/views/study/flashcard_widget.dart';
+import 'package:meu_flash/views/chat/chat_balloon.dart';
 
 class StudyPage extends StatefulWidget {
   @override
@@ -15,6 +20,78 @@ class StudyPage extends StatefulWidget {
 class _StudyPageState extends State<StudyPage> {
   int currentIndex = 0;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+  bool showChat = false;
+
+  int streak = 0;
+  int totalXP = 0;
+  late String userUid;
+  late String photoUrl = '';
+
+  @override
+  void initState() {
+    super.initState();
+    retrieveUserUid();
+    retrieveStreakValue().then((value) => mounted ? setState(() => streak = value) : null);
+    retrieveTotalXP().then((value) => mounted ? setState(() => totalXP = value) : null);
+    retrieveUserPhoto();
+  }
+
+  Future<void> retrieveUserUid() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      userUid = user.uid;
+    }
+  }
+
+  Future<int> retrieveStreakValue() async {
+    final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .doc('/users/$userUid/statistics/streak')
+        .get();
+
+    if (snapshot.exists) {
+      final data = snapshot.data() as Map<String, dynamic>;
+      return data['streak'] as int;
+    } else {
+      return 0;
+    }
+  }
+
+  Future<int> retrieveTotalXP() async {
+    final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .doc('/users/$userUid/statistics/streak')
+        .get();
+
+    if (snapshot.exists) {
+      final data = snapshot.data() as Map<String, dynamic>;
+      final streakModel = StreakModel.fromMap(data);
+      return streakModel.totalXP;
+    } else {
+      return 0;
+    }
+  }
+
+  Future<void> retrieveUserPhoto() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      if (mounted) {
+        setState(() {
+          photoUrl = user.photoURL ?? '';
+        });
+      }
+    }
+  }
+
+  void onItemTapped(int index) {
+    setState(() {
+      currentIndex = index;
+
+      if (index == 2) {
+        showChat = !showChat;
+      } else {
+        currentIndex = 0;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,216 +120,92 @@ class _StudyPageState extends State<StudyPage> {
     final currentFlashcard = flashcards[currentIndex % flashcards.length];
 
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    child: Column(
-                      children: [
-                        FlipCard(
-                          key: cardKey,
-                          flipOnTouch: false,
-                          direction: FlipDirection.VERTICAL,
-                          front: _buildCardFace(currentFlashcard.flashcardQuestion, true),
-                          back: _buildCardFace(currentFlashcard.flashcardAnswer, true),
-                        ),
-                        SizedBox(height: 20),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black,
-                            minimumSize: Size(180, 60),
-                          ),
-                          onPressed: () {
-                            cardKey.currentState!.toggleCard();
-                          },
-                          child: FittedBox(
-                            fit: BoxFit.contain,
-                            child: Text(
-                              'Flip',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ListView(
-                          shrinkWrap: true,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                      minimumSize: Size(140, 55),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        progressStore.updateProgress(currentFlashcard.flashcardId, 'again');
-                                        currentIndex = (currentIndex + 1) % flashcards.length;
-                                        cardKey.currentState!.toggleCard();
-                                      });
-
-                                      statsStore.updateDailyStatsForStudySession();
-
-                                      print('DailyStats updated: ${statsStore.dailyStats.toString()}');
-                                    },
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(
-                                        'Again',
-                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                      minimumSize: Size(140, 55),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        progressStore.updateProgress(currentFlashcard.flashcardId, 'hard');
-                                        currentIndex = (currentIndex + 1) % flashcards.length;
-                                        cardKey.currentState!.toggleCard();
-                                      });
-
-                                      statsStore.updateDailyStatsForStudySession();
-
-                                      print('DailyStats updated: ${statsStore.dailyStats.toString()}');
-                                    },
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(
-                                        'Hard',
-                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                      minimumSize: Size(140, 55),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        progressStore.updateProgress(currentFlashcard.flashcardId, 'medium');
-                                        currentIndex = (currentIndex + 1) % flashcards.length;
-                                        cardKey.currentState!.toggleCard();
-                                      });
-
-                                      statsStore.updateDailyStatsForStudySession();
-
-                                      print('DailyStats updated: ${statsStore.dailyStats.toString()}');
-                                    },
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(
-                                        'Medium',
-                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                      minimumSize: Size(140, 55),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        progressStore.updateProgress(currentFlashcard.flashcardId, 'easy');
-                                        currentIndex = (currentIndex + 1) % flashcards.length;
-                                        cardKey.currentState!.toggleCard();
-                                      });
-
-                                      statsStore.updateDailyStatsForStudySession();
-
-                                      print('DailyStats updated: ${statsStore.dailyStats.toString()}');
-                                    },
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(
-                                        'Easy',
-                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 20),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(0),
+        child: AppBar(
+          backgroundColor: Color(0xFF14293D),
+          elevation: 0,
+          automaticallyImplyLeading: false,
         ),
       ),
-    );
-  }
-
-  Widget _buildCardFace(String text, bool showLogo) {
-    return Card(
-      elevation: 0.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Stack(
-        children: [
-          Container(
-            width: 480,
-            height: 400,
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  text,
-                  style: TextStyle(color: Colors.black87, fontSize: 24.0),
-                  textAlign: TextAlign.center,
+      body: Stack(
+        children: <Widget>[
+          Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                height: 56.0,
+                color: Color(0xFF14293D),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset('lib/assets/simbolos/foguinho.png', width: 35, height: 35),
+                        SizedBox(width: 8),
+                        Text('$streak', style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                    CircleAvatar(
+                      radius: 28,
+                      backgroundImage: photoUrl.isNotEmpty
+                          ? NetworkImage(photoUrl) as ImageProvider<Object>
+                          : AssetImage('lib/assets/profile_picture.png'),
+                    ),
+                    Row(
+                      children: [
+                        Text('$totalXP', style: TextStyle(color: Colors.white)),
+                        SizedBox(width: 8),
+                        Image.asset('lib/assets/simbolos/xp.png', width: 45, height: 45),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ),
+              SizedBox(height: 10),
+              Text(
+                'clique na sirene para mais',
+                style: TextStyle(color: Colors.grey, fontSize: 16.0),
+              ),
+              SizedBox(height: 20),
+              Expanded(
+                child: FlashcardWidget(
+                  cardKey: cardKey,
+                  flashcard: currentFlashcard,
+                  currentIndex: currentIndex,
+                  flashcards: flashcards,
+                  progressStore: progressStore,
+                  statsStore: statsStore,
+                ),
+              ),
+            ],
           ),
-          Positioned(
-            bottom: 7,
-            right: 10,
-            child: Image.asset(
-              'lib/assets/logo/canto_logo.png',
-              width: 75,
-              height: 46,
-            ),
+          if (showChat) ChatBalloon(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFF14293D),
+        selectedItemColor: Colors.white60,
+        unselectedItemColor: Colors.white38,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Image.asset('lib/assets/simbolos/baralhos.png', width: 45, height: 45),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset('lib/assets/simbolos/medalha.png', width: 45, height: 45),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset('lib/assets/simbolos/professor1.png', width: 45, height: 45),
+            label: '',
           ),
         ],
+        currentIndex: currentIndex,
+        onTap: onItemTapped,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
       ),
     );
   }
 }
-
-

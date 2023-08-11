@@ -1,3 +1,5 @@
+// selected_decks.dart
+
 import 'package:flutter/material.dart';
 
 class SelectedDecks extends ChangeNotifier {
@@ -17,6 +19,20 @@ class SelectedDecks extends ChangeNotifier {
 
   void clearDecks() {
     _selectedDecks.clear();
+    notifyListeners();
+  }
+
+  bool isSelected(String deck) {
+    return _selectedDecks.contains(deck);
+  }
+
+  void addDecksFromCategory(Set<String> decks) {
+    _selectedDecks.addAll(decks);
+    notifyListeners();
+  }
+
+  void removeDecksFromCategory(Set<String> decks) {
+    _selectedDecks.removeWhere((deck) => decks.contains(deck));
     notifyListeners();
   }
 }

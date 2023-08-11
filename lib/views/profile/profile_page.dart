@@ -87,39 +87,36 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 20),
+                  SizedBox(height: 10), // Reduced size
                   Center(
                     child: CircleAvatar(
                       radius: 50,
                       backgroundImage: user.profilePicture != null
-                          ? NetworkImage(user.profilePicture!)
-                          : null,
-                      child: user.profilePicture == null
-                          ? Icon(Icons.person)
-                          : null,
+                          ? NetworkImage(user.profilePicture!) as ImageProvider<Object>
+                          : AssetImage('lib/assets/profile_picture.png') as ImageProvider<Object>,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 5), // Reduced size
                   Text(
                     '@${user.username}',
                     style: TextStyle(fontSize: 20, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10), // Reduced size
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 40),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Column(
+                        Row( // Added Row
                           children: [
                             Image.asset(
                               'lib/assets/simbolos/foguinho.png',
                               width: 45,
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(width: 5), // Added for space between image and number
                             Text(
-                              '$streak Streak',
+                              '$streak',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -128,15 +125,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ],
                         ),
-                        Column(
+                        Row( // Added Row
                           children: [
                             Image.asset(
                               'lib/assets/simbolos/xp.png',
                               width: 60,
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(width: 5), // Added for space between image and number
                             Text(
-                              '$totalXP XP Total',
+                              '$totalXP',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -148,7 +145,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 1), // Reduced size
                   TableCalendar(
                     firstDay: DateTime.utc(2020, 10, 16),
                     lastDay: DateTime.utc(2030, 3, 14),

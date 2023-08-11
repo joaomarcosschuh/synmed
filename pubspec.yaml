@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_overlay_window: ^0.2.0
 
   cupertino_icons: ^1.0.2
   firebase_core: ^2.13.0
@@ -31,6 +32,7 @@ dependencies:
   video_player: ^2.2.6
   flip_card: ^0.7.0
   table_calendar: ^3.0.0
+  colorful_safe_area: ^1.0.0
 
 dev_dependencies:
   build_runner: ^2.1.4
@@ -74,3 +76,17 @@ flutter:
     - lib/assets/fundo/study_background.png
     - lib/assets/logo/canto_logo.png
     - lib/assets/icons/cards.png
+    - lib/assets/eai.png
+    - lib/assets/icons/dislike.png
+    - lib/assets/icons/like.png
+    - lib/assets/icons/coment.png
+    - lib/assets/typing.gif
+    - lib/assets/user_profile.png
+    - lib/assets/bot.jpg
+    - lib/assets/icons/likeyes.png
+    - lib/assets/icons/sirene.png
+    - lib/assets/logo/logoupsiren.png
+    - lib/assets/simbolos/medalha.png
+    - lib/assets/simbolos/professor1.png
+    - lib/assets/simbolos/baralhos.png
+    - lib/assets/simbolos/add.png

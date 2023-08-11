@@ -11,9 +11,11 @@ class ProgressModel {
   int quality;
   int repetitions;
   List<int> steps;
-  int lapses; // Número de falhas
-  int factor; // Fator de dificuldade
-  bool isLeech; // Indica se o cartão é um "sanguessuga"
+  int lapses;
+  int factor;
+  bool isLeech;
+  String like; // Novo campo 'like'
+  String dislike; // Novo campo 'dislike'
 
   ProgressModel({
     required this.documentId,
@@ -28,6 +30,8 @@ class ProgressModel {
     required this.lapses,
     required this.factor,
     required this.isLeech,
+    this.like = 'nao', // Definir valor padrão como 'nao'
+    this.dislike = 'nao', // Definir valor padrão como 'nao'
   });
 
   factory ProgressModel.fromDocument(DocumentSnapshot doc) {
@@ -44,6 +48,8 @@ class ProgressModel {
       lapses: doc['lapses'],
       factor: doc['factor'],
       isLeech: doc['isLeech'],
+      like: doc['like'], // Adicionando os novos campos aqui
+      dislike: doc['dislike'], // Adicionando os novos campos aqui
     );
   }
 
@@ -60,6 +66,8 @@ class ProgressModel {
       'lapses': lapses,
       'factor': factor,
       'isLeech': isLeech,
+      'like': like, // Adicionando os novos campos aqui
+      'dislike': dislike, // Adicionando os novos campos aqui
     };
   }
 
@@ -81,6 +89,8 @@ class ProgressModel {
       lapses: $lapses
       factor: $factor
       isLeech: $isLeech
+      like: $like
+      dislike: $dislike
     ''';
   }
 }

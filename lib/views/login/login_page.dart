@@ -22,7 +22,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue).copyWith(background: Colors.black),
+        primaryColor: Color.fromRGBO(20, 41, 61, 1),
+        scaffoldBackgroundColor: Color.fromRGBO(20, 41, 61, 1),
+        appBarTheme: AppBarTheme(backgroundColor: Color.fromRGBO(20, 41, 61, 1)),
       ),
       home: LoginPage(),
     );
@@ -70,7 +72,9 @@ class _LoginPageState extends State<LoginPage> {
         DocumentSnapshot userDoc = await _userService.getUser(user!.uid);
         if (userDoc.exists) {
           final userData = userDoc.data() as Map<String, dynamic>?;
-          DocumentSnapshot streakDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).collection('statistics').doc('streak').get();
+          DocumentSnapshot streakDoc = await FirebaseFirestore.instance
+              .collection('users').doc(user.uid).collection('statistics').doc(
+              'streak').get();
           if (!streakDoc.exists) {
             Navigator.pushReplacement(
               context,
@@ -81,14 +85,25 @@ class _LoginPageState extends State<LoginPage> {
             DateTime now = DateTime.now();
 
             // Check if the user has already logged in today
-            if (userData!['lastLoginAt']?.toDate().day != now.day) {
+            if (userData!['lastLoginAt']
+                ?.toDate()
+                .day != now.day) {
               // This is the first login of the day
               await _userService.updateLastLoginAt(user.uid, now);
 
-              String statsId = '${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}';
-              DailyStatsService dailyStatsService = Provider.of<DailyStatsService>(context, listen: false);
-              StreakService streakService = Provider.of<StreakService>(context, listen: false);
-              DailyStatsModel? dailyStats = await dailyStatsService.getDailyStats(user.uid, statsId);
+              String statsId = '${DateTime
+                  .now()
+                  .day}-${DateTime
+                  .now()
+                  .month}-${DateTime
+                  .now()
+                  .year}';
+              DailyStatsService dailyStatsService = Provider.of<
+                  DailyStatsService>(context, listen: false);
+              StreakService streakService = Provider.of<StreakService>(
+                  context, listen: false);
+              DailyStatsModel? dailyStats = await dailyStatsService
+                  .getDailyStats(user.uid, statsId);
               if (dailyStats == null) {
                 dailyStats = DailyStatsModel(
                   xpDia: 0,
@@ -115,11 +130,27 @@ class _LoginPageState extends State<LoginPage> {
           }
         }
       } catch (e) {
-        print(e);
-      } finally {
         setState(() {
           _isLoading = false;
         });
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Usuário não encontrado'),
+              content: Text(
+                  'Crie uma conta ou verifique suas credenciais e tente novamente'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
     }
   }
@@ -183,7 +214,23 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     } catch (e) {
-      print(e);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Usuário não encontrado'),
+            content: Text('Crie uma conta ou verifique suas credenciais e tente novamente.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 

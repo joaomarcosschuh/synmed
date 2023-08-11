@@ -1,22 +1,37 @@
 import 'package:flutter/material.dart';
 
 class SelectedDecks extends ChangeNotifier {
-  Set<String> _selectedDecks = {};
+  Map<String, Set<String>> _selectedDecksByCategory = {};
+  String _selectedCategory = "";
 
-  Set<String> get selectedDecks => _selectedDecks;
+  Map<String, Set<String>> get selectedDecksByCategory => _selectedDecksByCategory;
+  String get selectedCategory => _selectedCategory;
 
-  void addDeck(String deck) {
-    _selectedDecks.add(deck);
+  void setSelectedCategory(String category) {
+    _selectedCategory = category;
     notifyListeners();
   }
 
-  void removeDeck(String deck) {
-    _selectedDecks.remove(deck);
+  void addDeckToCategory(String category, String deck) {
+    if (!_selectedDecksByCategory.containsKey(category)) {
+      _selectedDecksByCategory[category] = {};
+    }
+    _selectedDecksByCategory[category]!.add(deck);
     notifyListeners();
   }
 
-  void clearDecks() {
-    _selectedDecks.clear();
-    notifyListeners();
+  void removeDeckFromCategory(String category, String deck) {
+    if (_selectedDecksByCategory.containsKey(category)) {
+      _selectedDecksByCategory[category]!.remove(deck);
+      if (_selectedDecksByCategory[category]!.isEmpty) {
+        _selectedDecksByCategory.remove(category);
+      }
+      notifyListeners();
+    }
+  }
+
+  bool isSelectedInCategory(String category, String deck) {
+    return _selectedDecksByCategory.containsKey(category) &&
+        _selectedDecksByCategory[category]!.contains(deck);
   }
 }

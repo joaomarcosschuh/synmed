@@ -5,9 +5,14 @@ import 'package:provider/provider.dart';
 class DeckCheckbox extends StatefulWidget {
   final String deck;
   final bool initialValue;
+  final ValueChanged<bool> onChanged; // Adicione esta linha
 
-  const DeckCheckbox({Key? key, required this.deck, required this.initialValue})
-      : super(key: key);
+  const DeckCheckbox({
+    Key? key,
+    required this.deck,
+    required this.initialValue,
+    required this.onChanged, // Adicione esta linha
+  }) : super(key: key);
 
   @override
   _DeckCheckboxState createState() => _DeckCheckboxState();
@@ -24,7 +29,6 @@ class _DeckCheckboxState extends State<DeckCheckbox> {
 
   @override
   Widget build(BuildContext context) {
-    SelectedDecks selectedDecks = Provider.of<SelectedDecks>(context);
     return CheckboxListTile(
       title: Text(widget.deck),
       value: _isChecked,
@@ -32,11 +36,7 @@ class _DeckCheckboxState extends State<DeckCheckbox> {
         setState(() {
           _isChecked = value!;
         });
-        if (_isChecked) {
-          selectedDecks.addDeck(widget.deck);
-        } else {
-          selectedDecks.removeDeck(widget.deck);
-        }
+        widget.onChanged(_isChecked); // Atualize para usar o onChanged fornecido
       },
     );
   }

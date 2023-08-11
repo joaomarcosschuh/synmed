@@ -33,5 +33,15 @@ class UserModel {
         lastLoginAt = (doc['lastLoginAt'] as Timestamp).toDate(),
         name = doc['name'],
         medicinaEtapa = doc['medicinaEtapa'];
-}
 
+  UserModel.defaultUser()
+      : uid = 'default',
+        email = 'default@email.com',
+        username = '',
+        birthdate = null,
+        profilePicture = null,
+        createdAt = DateTime.now(),
+        lastLoginAt = DateTime.now(),
+        name = 'Default',
+        medicinaEtapa = '';
+}

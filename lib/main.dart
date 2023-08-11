@@ -23,8 +23,6 @@ import 'views/login/first_login.dart';
 import 'views/main_view_page.dart';
 import 'views/intro/intro_vid.dart';
 import 'views/chat/chat_page.dart';
-import 'views/create/creating_cards_page.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:meu_flash/views/category/decks_page.dart';
 
 void main() {
